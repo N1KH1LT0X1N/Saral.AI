@@ -1,0 +1,72 @@
+{
+  "manifest_version": 3,
+  "name": "SARALify",
+  "version": "1.0",
+  "description": "Generate video explanations for research papers from arXiv",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://arxiv.org/*",
+    "https://www.biorxiv.org/*",
+    "https://www.medrxiv.org/*",
+    "https://chemrxiv.org/*",
+    "https://eartharxiv.org/*",
+    "https://osf.io/*",
+    "https://preprints.org/*",
+    "https://canvas.iiit.ac.in/*",
+    "http://localhost:5001/*"
+  ],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://arxiv.org/abs/*"
+      ],
+      "js": ["content_script.js"],
+      "css": ["styles.css"]
+    },
+    {
+      "matches": [
+        "https://www.biorxiv.org/content/*",
+        "https://www.medrxiv.org/content/*"
+      ],
+      "js": ["content_script.js"],
+      "css": ["styles.css"]
+    },
+    {
+      "matches": [
+        "https://chemrxiv.org/engage/chemrxiv/article-details/*"
+      ],
+      "js": ["content_script.js"],
+      "css": ["styles.css"]
+    },
+    {
+      "matches": [
+        "https://eartharxiv.org/repository/view/*",
+        "https://eartharxiv.org/repository/object/*"
+      ],
+      "js": ["content_script.js"],
+      "css": ["styles.css"]
+    },
+    {
+      "matches": [
+        "https://osf.io/preprints/socarxiv/*"
+      ],
+      "js": ["content_script.js"],
+      "css": ["styles.css"]
+    },
+    {
+      "matches": [
+        "https://www.preprints.org/manuscript/*"
+      ],
+      "js": ["content_script.js"],
+      "css": ["styles.css"]
+    }
+  ]
+}

@@ -18,8 +18,20 @@ security = HTTPBearer(auto_error=False)
 class GoogleAuthConfig:
     def __init__(self):
         self.google_client_id = os.getenv("GOOGLE_CLIENT_ID")
-        self.jwt_secret = os.getenv("JWT_SECRET", "your-default-secret-key-change-in-production")
+        self.jwt_secret = os.getenv("JWT_SECRET")
         self.jwt_algorithm = "HS256"
+        
+        # SECURITY: Require JWT_SECRET in production
+        if not self.jwt_secret:
+            import warnings
+            warnings.warn(
+                "SECURITY WARNING: JWT_SECRET not set! Using insecure default. "
+                "Set JWT_SECRET environment variable with a strong random key (32+ chars).",
+                RuntimeWarning
+            )
+            # Fallback for development only - DO NOT use in production
+            self.jwt_secret = "INSECURE-DEV-ONLY-CHANGE-IN-PRODUCTION-" + os.urandom(16).hex()
+            logger.warning("⚠️  SECURITY: Using insecure JWT secret - set JWT_SECRET env var!")
         
         # Verify PyJWT is properly installed
         try:
@@ -30,7 +42,7 @@ class GoogleAuthConfig:
             raise
         
         logger.info(f"Google Client ID configured: {'Yes' if self.google_client_id else 'No'}")
-        logger.info(f"JWT Secret configured: {'Yes' if self.jwt_secret != 'your-default-secret-key-change-in-production' else 'Using default'}")
+        logger.info(f"JWT Secret configured: {'Yes - custom secret' if os.getenv('JWT_SECRET') else 'No - using generated default (INSECURE)'}")
         logger.info(f"PyJWT version: {getattr(jwt, '__version__', 'Unknown')}")
         
         if not self.google_client_id:
